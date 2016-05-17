@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>STL源码剖析（4） | Ding4it的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="关联式容器感觉之前代码贴太多了，接下来少放点代码。
+标准的STL关联式容器分为set（集合）和map（映射表）两大类，以及其衍生体multiset和multimap。容器的底层机制均已RB-tree红黑树来完成。
+set与map的区别主要是set中键和值是一样的，而map对应的key-value并不一样。
+multiset与set和multimap和map之间的区别是multi-系列使用的是Ins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STL源码剖析（4）">
+<meta property="og:url" content="http://yoursite.com/2016/05/16/STL-4/index.html">
+<meta property="og:site_name" content="Ding4it的博客">
+<meta property="og:description" content="关联式容器感觉之前代码贴太多了，接下来少放点代码。
+标准的STL关联式容器分为set（集合）和map（映射表）两大类，以及其衍生体multiset和multimap。容器的底层机制均已RB-tree红黑树来完成。
+set与map的区别主要是set中键和值是一样的，而map对应的key-value并不一样。
+multiset与set和multimap和map之间的区别是multi-系列使用的是Ins">
+<meta property="og:updated_time" content="2016-05-17T12:15:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STL源码剖析（4）">
+<meta name="twitter:description" content="关联式容器感觉之前代码贴太多了，接下来少放点代码。
+标准的STL关联式容器分为set（集合）和map（映射表）两大类，以及其衍生体multiset和multimap。容器的底层机制均已RB-tree红黑树来完成。
+set与map的区别主要是set中键和值是一样的，而map对应的key-value并不一样。
+multiset与set和multimap和map之间的区别是multi-系列使用的是Ins">
+  
+    <link rel="alternate" href="/atom.xml" title="Ding4it的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ding4it的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-STL-4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/05/16/STL-4/" class="article-date">
+  <time datetime="2016-05-16T05:16:04.000Z" itemprop="datePublished">2016-05-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      STL源码剖析（4）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="关联式容器"><a href="#关联式容器" class="headerlink" title="关联式容器"></a>关联式容器</h2><p>感觉之前代码贴太多了，接下来少放点代码。</p>
+<p>标准的STL关联式容器分为set（集合）和map（映射表）两大类，以及其衍生体multiset和multimap。容器的底层机制均已RB-tree红黑树来完成。</p>
+<p>set与map的区别主要是set中键和值是一样的，而map对应的key-value并不一样。</p>
+<p>multiset与set和multimap和map之间的区别是multi-系列使用的是<code>Insert-equal()</code>，内部允许重复，而set,map使用的是<code>Insert-unique()</code>，内部没有重复。</p>
+<h2 id="树型结构"><a href="#树型结构" class="headerlink" title="树型结构"></a>树型结构</h2><p>树是由节点（nodes）和边（edges）构成。整棵树最上端的节点称为根节点。相连节点之中，在上者称为父节点（parent），在下者称为子节点（child）,无子节点这称为叶节点（leaf）。子节点可以存在多个，如果最多只能有2个子节点，即所谓二叉树(binary tree)。</p>
+<p>不同子节点如果拥有同一个父节点，则为兄弟节点（siblings）。根节点至任何节点之间有唯一路径（path），路径所经过的边数，称为路径长度（length）。跟节点至任一节点的路径长度，即该节点的深度（depth）。根节点深度为0。某节点至其最深子节点的路径长度，称为该节点的高度（height）。整棵树的高度，以根节点的高度来表示。</p>
+<p><strong>二叉搜索树</strong> 可提供对数时间的元素插入和访问。其放置规则是：任何节点的键值一定大于其左子树的每个节点的键值，小于右子树的每一个节点的键值。</p>
+<p><strong>平衡二叉搜索树</strong> AVL-Tree， RB-Tree， AA-Tree。没有任何一个节点深度过大。</p>
+<p><a href="http://blog.csdn.net/whucyl/article/details/17289841" target="_blank" rel="external"><strong>AVL-Tree</strong></a>  要求任何节点的左右子树高度相差最多1。不平衡的时候通过对子树进行旋转维持整树的平衡。</p>
+<p><strong>插入节点时</strong>，插入点至根节点路径上各节点可能改变平衡状态，因此，只要调整其中最深的那个节点，便可使整棵树重新获得平衡。假设平衡被破坏的各节点中最深的一个节点为X，情况分为以下4种：</p>
+<ol>
+<li>插入点位于X的<strong>左</strong>子节点的<strong>左</strong>子树：左左</li>
+<li>插入点位于X的<strong>左</strong>子节点的<strong>右</strong>子树：左右</li>
+<li>插入点位于X的<strong>右</strong>子节点的<strong>左</strong>子树：右左</li>
+<li>插入点位于X的<strong>右</strong>子节点的<strong>右</strong>子树：右右</li>
+</ol>
+<p>1，4情况彼此对称，称为外侧插入，采用单旋转操作；</p>
+<p>2，3情况彼此对称，称为内侧插入，采用双旋转操作。</p>
+<p><strong>删除节点时</strong>，首先找到要删除的节点，如果</p>
+<ol>
+<li>该节点是叶节点，直接删除；</li>
+<li>该节点有左子树不为空，将该节点替换为左子树的最右叶节点；</li>
+<li>否则，将该节点替换为右子树的最左节点。</li>
+</ol>
+<p>然后，从被替换的叶节点开始往上判断，是否不平衡，若不平衡，则旋转平衡。</p>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>红黑树（RB-Tree）不仅是一个二叉搜索树，而且必须满足一下特征：</p>
+<ol>
+<li>每个节点不是红色就是黑色；</li>
+<li>根节点为黑色；</li>
+<li>如果节点为红色，其子节点必须为黑；</li>
+<li>任一节点至NULL（树尾端）的任何路径，所含的黑节点数必须相同。</li>
+</ol>
+<p>引申：</p>
+<ol>
+<li>不存在父节点和子节点都为红色；</li>
+<li>新增节点时初始颜色为红色（平衡过后可能为黑）；</li>
+<li>新增节点之父节点必须为黑色（否则需平衡）；</li>
+<li>空节点可视为黑节点。</li>
+</ol>
+<p>红黑树太繁琐了，不写了。书210页。贴个链接。<a href="http://www.cnblogs.com/fornever/archive/2011/12/02/2270692.html" target="_blank" rel="external">http://www.cnblogs.com/fornever/archive/2011/12/02/2270692.html</a></p>
+<p>以下跟SGI STL 的红黑树实现可能不一样。</p>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>若父节点为黑，则不需平衡。</p>
+<p>若父节点为红，则看父节点的兄弟节点。且G为黑，GG不定。</p>
+<p>设插入节点为X，父节点为P，父节点兄弟节点为S，祖父节点为G，组祖父为GG。</p>
+<ol>
+<li>若S为黑，且X为外侧插入。先对PG做单旋，然后更改PG颜色。</li>
+<li>若S为黑，且X为内侧插入。先PX单旋，改变GX颜色，在对G做一次单旋。</li>
+<li>若S为红，P也是红，则直接把G改为红，PS改为黑。然后X为P，P为G，G为GG，S为GG-&gt;right,重新判断。（跟书上不一样，书上没说S为红且为内插的时候的情况）</li>
+</ol>
+<p>为了方便，避免递归判断的情况，有一个从上到下的程序：沿着插入节点的路径，从上到下，只要X的两个子节点都是红，则X改为红，两个子节点改为黑，然后再插入的叶节点进行一个单或双旋转，这样不会存在递归的问题。</p>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>红黑树的删除是通过找到一个替换节点替换目标节点，然后删除目标节点来实现的。替代节点N至少有一个子节点为NULL。</p>
+<ol>
+<li>若N为红色，则其为叶节点（否则其子节点就是黑色，与他兄弟节点（NULL）的黑色节点数就不一样了）。直接把N删掉就行。</li>
+<li>若N为黑色，且另一子节点M不为NULL，那么M必为红色叶节点，直接把M替换N，然后删除M就行。</li>
+<li>若N为黑色，且为叶节点，则删除N后，破坏了平衡树性质4。需要进行相应操作，假设父节点为P，N的<strong>兄弟节点</strong>为S：<ol>
+<li>若S为红，则P为黑，PS旋转，并变色。然后重新对N判断。</li>
+<li>以下情况S为黑。<ol>
+<li>若P为红，S的2个子节点都为黑，则将PS变色，结束。</li>
+<li>若P为黑，S的2个子节点都为黑，则S变为红，将N设为P，重新平衡。</li>
+<li>P任意色，若N为P的左节点：<ol>
+<li>S右节点SR为红，则PS旋转，SR设为黑，P设为黑，S设为P的颜色。结束。</li>
+<li>S左节点SL为红，则SL和S旋转，SL设为黑，S设为红，这样就变成了上面情况。</li>
+</ol>
+</li>
+<li>P任意色，若N为P的右节点:<ol>
+<li>若S左节点SL为红，则PS旋转，SL为黑，P为黑，S为P颜色，结束。</li>
+<li>若S右节点SR为红，则SR和S旋转，SR为黑，S为红，转为上面情况。</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>至此，删除节点完成。接下来就看看SGI STL中RB-Tree的代码实现。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/05/16/STL-4/" data-id="cio9k9xzm0006fynqrcw4skfu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/05/02/union-find/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">并查集union-find</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-STL/">C++ STL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图-路径压缩/">图 路径压缩</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C-STL/" style="font-size: 20px;">C++ STL</a> <a href="/tags/图-路径压缩/" style="font-size: 10px;">图 路径压缩</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/05/16/STL-4/">STL源码剖析（4）</a>
+          </li>
+        
+          <li>
+            <a href="/2016/05/02/union-find/">并查集union-find</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/28/STL-3/">STL源码剖析（3）</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/19/STL-2/">STL源码剖析（2）</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/15/STL-1/">STL源码剖析（1）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 ding4it<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
