@@ -17,7 +17,7 @@ set拥有与list相同的某些性质：当客户对他进行元素新增操作�
 set的Iterator被定义为底层的const iterator，所以set的iterator只能读不能写。
 set拥有与list相同的某些性质：当客户对他进行元素新增操作（insert）和删除操作（erase）时，操作之前的所有迭代器，在操作完之后都依然有效。
 此外，针对set和multiset，S">
-<meta property="og:updated_time" content="2016-05-20T16:04:53.000Z">
+<meta property="og:updated_time" content="2016-05-20T16:21:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="STL源码剖析（6）">
 <meta name="twitter:description" content="关联式容器setSet的元素的键值就是实值，实值就是键值。且set不允许有两个元素相同的键值。
@@ -121,15 +121,11 @@ set拥有与list相同的某些性质：当客户对他进行元素新增操作�
 <h4 id="二次探测（quadratic-probing）"><a href="#二次探测（quadratic-probing）" class="headerlink" title="二次探测（quadratic probing）"></a>二次探测（quadratic probing）</h4><p>二次探测可以避免主集团，但是无法避免次集团。</p>
 <p>很多元素hash出来的位置相同时，则形成次集团。</p>
 <p>二次索引在面对碰撞时，不是采用+1的策略，而是采用方程$F[i] = i^2$这种形式。比如计算出来的位置是H，那么一次尝试的位置为$H+1^2,H+2^2,H+3^2，…，H+i^2$。可有效避免主集团。</p>
-<p>然后呢。<br>$$H_i=H_0+1^2 (mod \ M)$$</p>
-<p>$$H_{i-1}=H_0+(i-1)^2 (mod \    M)$$</p>
-<p>$$ H_i=H_i+ 2i-1 (mod  \ M) $$</p>
-<p>这样就不用计算平方，就可以计算第$ i $个位置了。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/20/STL-6/" data-id="ciofwxrqw00064jnqhy6dhamu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/05/20/STL-6/" data-id="ciofx4tmv00088nnq8atzbbjd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -139,15 +135,6 @@ set拥有与list相同的某些性质：当客户对他进行元素新增操作�
   
     
 <nav id="article-nav">
-  
-    <a href="/2016/05/20/formula/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          formula
-        
-      </div>
-    </a>
   
   
     <a href="/2016/05/18/STL-5/" id="article-nav-older" class="article-nav-link-wrap">
@@ -203,10 +190,6 @@ set拥有与list相同的某些性质：当客户对他进行元素新增操作�
       <ul>
         
           <li>
-            <a href="/2016/05/20/formula/">formula</a>
-          </li>
-        
-          <li>
             <a href="/2016/05/20/STL-6/">STL源码剖析（6）</a>
           </li>
         
@@ -220,6 +203,10 @@ set拥有与list相同的某些性质：当客户对他进行元素新增操作�
         
           <li>
             <a href="/2016/05/02/union-find/">并查集union-find</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/28/STL-3/">STL源码剖析（3）</a>
           </li>
         
       </ul>
