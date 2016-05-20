@@ -64,6 +64,111 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-formula" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/05/20/formula/" class="article-date">
+  <time datetime="2016-05-20T15:26:26.000Z" itemprop="datePublished">2016-05-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/20/formula/">formula</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>$$H<em>i-H</em>{i-1}=i^2-(i-1)^2 (mod M)$$</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/05/20/formula/" data-id="ciofvpn2h0000penqei6hhxwl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-STL-6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/05/20/STL-6/" class="article-date">
+  <time datetime="2016-05-20T13:25:53.000Z" itemprop="datePublished">2016-05-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/20/STL-6/">STL源码剖析（6）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="关联式容器"><a href="#关联式容器" class="headerlink" title="关联式容器"></a>关联式容器</h2><h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p>Set的元素的键值就是实值，实值就是键值。且set不允许有两个元素相同的键值。</p>
+<p>set的Iterator被定义为底层的const iterator，所以set的iterator只能读不能写。</p>
+<p>set拥有与list相同的某些性质：当客户对他进行元素新增操作（insert）和删除操作（erase）时，操作之前的所有迭代器，在操作完之后都依然有效。</p>
+<p>此外，针对set和multiset，STL特别提供了一组相关算法，包括交集（set_intersection）、并集（set_union）、差集（set_difference）、对称差集（set_symmetric_difference）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> _Key, <span class="keyword">class</span> _Compare, <span class="keyword">class</span> _Alloc&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="built_in">set</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"><span class="comment">//set的key_type和value_type都是Key类型。</span></span><br><span class="line">  <span class="keyword">typedef</span> _Key     key_type;</span><br><span class="line">  <span class="keyword">typedef</span> _Key     value_type;</span><br><span class="line"><span class="comment">//对应一样的compare</span></span><br><span class="line">  <span class="keyword">typedef</span> _Compare key_compare;</span><br><span class="line">  <span class="keyword">typedef</span> _Compare value_compare;</span><br><span class="line">  <span class="comment">//然后定义Rep_type，</span></span><br><span class="line">  <span class="keyword">typedef</span> _Rb_tree&lt;key_type, value_type, </span><br><span class="line">                  _Identity&lt;value_type&gt;, key_compare, _Alloc&gt; _Rep_type；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们看_Rb_tree的定义</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> _Key, <span class="keyword">class</span> _Value, <span class="keyword">class</span> _KeyOfValue, <span class="keyword">class</span> _Compare,</span><br><span class="line">          <span class="keyword">class</span> _Alloc = __STL_DEFAULT_ALLOCATOR(_Value) &gt;</span><br><span class="line"><span class="keyword">class</span> _Rb_tree : <span class="keyword">protected</span> _Rb_tree_base&lt;_Value, _Alloc&gt;&#123;&#125;；</span><br></pre></td></tr></table></figure>
+<p>可以看出<code>_KeyOfValue</code>实际对应的是<code>_Identity&lt;value_type&gt;</code>，这是通过value来获得key的程序，类里面获得key就是通过这个来得到的。</p>
+<p>set的<code>_KeyOfValue</code>是一个<code>_Identity&lt;value_type&gt;</code>，<code>_KeyOfValue</code>就是实际的<code>value_type</code>。</p>
+<p>对应的map的<code>_KeyOfValue</code>的是<code>_Select1st&lt;value_type&gt;</code>，因为在map里面</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">const</span> _Key, _Tp&gt; value_type;</span><br></pre></td></tr></table></figure>
+<p>map的value_type是一个<code>pair&lt;const _Key, _Tp&gt;</code>,然后<code>_Select1st&lt;value_type&gt;</code>就是得到的pair的第一个元素，即Key。</p>
+<p>然后set也没啥了。</p>
+<h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p>map的话，所有元素会根据元素的键值自动排序，内部肯定还是用红黑树的。</p>
+<p>map的元素是一个pair，同事拥有实值和键值。pair的第一个元素是键值，第二个元素是实值。</p>
+<p>看完红黑树，map和set已经没什么好看的了，就是一个容器。</p>
+<h3 id="multiset-and-multimap"><a href="#multiset-and-multimap" class="headerlink" title="multiset and multimap"></a>multiset and multimap</h3><p>multiset 和 multimap 的话。之前的map和set的insert是<code>insert_unique()</code>。现在改成了<code>insert_equal()</code>。</p>
+<h3 id="hashtable"><a href="#hashtable" class="headerlink" title="hashtable"></a>hashtable</h3><p>二叉搜索树是对数平均时间。然后hash table 散列表 在插入、删除、搜索等操作上具有常数平均时间的表现，且这种表现以统计为基础，不依赖于输入元素的随机性。</p>
+<p>但是hash function 会有一个问题：可能不同的元素会被映射到相同的位置上。这就是所谓的“碰撞（collision）”问题。解决的办法有很多种，包括线性探测（linear probing）、二次探测（quadratic probing）、开链（separate chaining）等做法。</p>
+<p>负载系数（loading factor）= 元素个数 / 表格大小</p>
+<p>负载系数在0到1之间，除非采用开链策略。</p>
+<h4 id="线性探测（linear-probing）"><a href="#线性探测（linear-probing）" class="headerlink" title="线性探测（linear probing）"></a>线性探测（linear probing）</h4><p>当hash function 计算出某个元素的插入位置，但是这个位置上的空间已经被占用时，应该怎么办？最简单的办法就是循序往下一一寻找空的空间，直到找到可用空间为止。在搜索元素是否存在时，也要意义寻找，直到找到吻合者，或者直到空的空间，说明元素不存在。</p>
+<p>而在删除元素时，则必须采用惰性删除（lazy deletion），即只标记删除记号，并不真正删除，真正删除在下一次表格重新整理时执行。</p>
+<p>有两个概念，<strong>主集团</strong> 和 <strong>次集团</strong>。连续的被占用的区域看做主集团。</p>
+<h4 id="二次探测（quadratic-probing）"><a href="#二次探测（quadratic-probing）" class="headerlink" title="二次探测（quadratic probing）"></a>二次探测（quadratic probing）</h4><p>二次探测可以避免主集团，但是无法避免次集团。</p>
+<p>很多元素hash出来的位置相同时，则形成次集团。</p>
+<p>二次索引在面对碰撞时，不是采用+1的策略，而是采用方程$F[i] = i^2$这种形式。比如计算出来的位置是H，那么一次尝试的位置为$H+1^2,H+2^2,H+3^2，…，H+i^2$。可有效避免主集团。</p>
+<p>然后呢。<br>$$H_i=H_0+1^2 (mod M)$$</p>
+<p>$$H_{i-1}=H_0+(i-1)^2 (mode M)$$</p>
+<p>$$H<em>i-H</em>{i-1}=i^2-(i-1)^2 (mod M)$$<br>这样就不用计算平方，就可以计算第$ i $个位置了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/05/20/STL-6/" data-id="ciofuzyni0004l7nqje7jd9uu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-STL-5" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/05/18/STL-5/" class="article-date">
@@ -93,7 +198,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/18/STL-5/" data-id="ciofeytz000097unq0hdsx0cr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/05/18/STL-5/" data-id="ciofuzynz000dl7nqsax565c1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -206,7 +311,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/16/STL-4/" data-id="ciofeytzc000c7unq50z1ooue" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/05/16/STL-4/" data-id="ciofuzynb0001l7nqn6zt938z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -245,7 +350,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/02/union-find/" data-id="ciofeytz4000a7unq9szcsp4e" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/05/02/union-find/" data-id="ciofuzynr000bl7nqfak0cjvx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图-路径压缩/">图 路径压缩</a></li></ul>
@@ -308,7 +413,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/28/STL-3/" data-id="ciofeytym00037unqfpd7bl3b" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/04/28/STL-3/" data-id="ciofuzynn0008l7nq32rf5rmv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -356,7 +461,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/19/STL-2/" data-id="ciofeytye00017unqfmaqtqig" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/04/19/STL-2/" data-id="ciofuzynh0003l7nq3kjvga08" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -438,7 +543,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/15/STL-1/" data-id="ciofeyty700007unq9sjqnde5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/04/15/STL-1/" data-id="ciofuzyn60000l7nql5pl428x" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -494,6 +599,14 @@
       <ul>
         
           <li>
+            <a href="/2016/05/20/formula/">formula</a>
+          </li>
+        
+          <li>
+            <a href="/2016/05/20/STL-6/">STL源码剖析（6）</a>
+          </li>
+        
+          <li>
             <a href="/2016/05/18/STL-5/">STL源码剖析（5）</a>
           </li>
         
@@ -503,14 +616,6 @@
         
           <li>
             <a href="/2016/05/02/union-find/">并查集union-find</a>
-          </li>
-        
-          <li>
-            <a href="/2016/04/28/STL-3/">STL源码剖析（3）</a>
-          </li>
-        
-          <li>
-            <a href="/2016/04/19/STL-2/">STL源码剖析（2）</a>
           </li>
         
       </ul>
