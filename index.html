@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -117,11 +117,12 @@
 <p>$$H_{i-1} =  H_0 + (i-1)^2 (mod M) $$ </p>
 <p>$$H_{i}  -   {H_{i-1}} = i^2 - (i-1)^2 (mod M) $$</p>
 <p>$$H_i = H_{i-1} + 2i-1 (mod M)$$</p>
+<p>这样就可以不用算平方了。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/20/STL-6/" data-id="ciofxu3a70008ptnqp2lf3eul" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/05/20/STL-6/" data-id="cioh490me0006ennqra3d2f7f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -162,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/18/STL-5/" data-id="ciofxu3a20006ptnq0w3eicf4" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/05/18/STL-5/" data-id="cioh490mi0008ennq4b2pfaf0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -275,7 +276,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/16/STL-4/" data-id="ciofxu39z0003ptnqmkpqpb8c" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/05/16/STL-4/" data-id="cioh490mc0004ennqrbqcoew3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -314,7 +315,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/05/02/union-find/" data-id="ciofxu3ag000dptnqhjsemulk" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/05/02/union-find/" data-id="cioh490mj000bennqi5lw38hh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图-路径压缩/">图 路径压缩</a></li></ul>
@@ -377,7 +378,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/28/STL-3/" data-id="ciofxu3a00004ptnq8oj64jj2" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/04/28/STL-3/" data-id="cioh490m50001ennqz8xmdzim" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -425,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/19/STL-2/" data-id="ciofxu39t0001ptnqqu40rwsk" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/04/19/STL-2/" data-id="cioh490mb0003ennq16ma4i06" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -463,8 +464,8 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Shape(<span class="number">3</span>,<span class="number">5</span>), <span class="keyword">int</span>(<span class="number">8</span>)</span><br></pre></td></tr></table></figure>
 <p>STL 最常将此技巧应用于仿函数（Functor)于算法的搭配上。</p>
 <p>PS：Functor 还没细看。</p>
-<h3 id="1-9-3-静态常量证书成员在class内部直接初始化"><a href="#1-9-3-静态常量证书成员在class内部直接初始化" class="headerlink" title="1.9.3 静态常量证书成员在class内部直接初始化"></a>1.9.3 静态常量证书成员在class内部直接初始化</h3><p>const static <em>integral</em> data member </p>
-<p><em>integral</em> 泛指所有整数型别：int, long, char 等</p>
+<h3 id="1-9-3-静态常量证书成员在class内部直接初始化"><a href="#1-9-3-静态常量证书成员在class内部直接初始化" class="headerlink" title="1.9.3 静态常量证书成员在class内部直接初始化"></a>1.9.3 静态常量证书成员在class内部直接初始化</h3><p>const static _integral_ data member </p>
+<p>_integral_ 泛指所有整数型别：int, long, char 等</p>
 <h2 id="2-allocator"><a href="#2-allocator" class="headerlink" title="2 allocator"></a>2 allocator</h2><ul>
 <li><p>设置sub-allocation, 两层结构，分别对应大内存和小内存的申请空间</p>
 </li>
@@ -507,7 +508,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/15/STL-1/" data-id="ciofxu39n0000ptnqvmxry05p" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/04/15/STL-1/" data-id="cioh490m00000ennqrz3s2wxi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-STL/">C++ STL</a></li></ul>
@@ -529,7 +530,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Mot-clés</h3>
+    <h3 class="widget-title">Tags</h3>
     <div class="widget">
       <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-STL/">C++ STL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图-路径压缩/">图 路径压缩</a></li></ul>
     </div>
@@ -539,7 +540,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
       <a href="/tags/C-STL/" style="font-size: 20px;">C++ STL</a> <a href="/tags/图-路径压缩/" style="font-size: 10px;">图 路径压缩</a>
     </div>
@@ -558,7 +559,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
@@ -595,7 +596,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 ding4it<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
